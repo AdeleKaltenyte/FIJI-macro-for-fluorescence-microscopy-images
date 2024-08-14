@@ -1,3 +1,5 @@
+//Microscopy pictures were processed with Triangle method in Fiji
+
 // This part of the macro creates a loop for processing multiple files in the given directories
 dir1 = getDirectory("Source Directory ");
 dir2 = getDirectory("Destination Directory ");
@@ -10,26 +12,12 @@ for (i=0; i<list.length; i++) {
 	"open=["+ dir1 + list[i] +"] autoscale color_mode=Default open_all_series rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT"); //Import .czi-files
 	
 	name = getTitleStripExtension();
-// Adjusting the LUT for GFP, the first slice is brightfield image, and thus not needed
-run("Brightness/Contrast...");
-setMinAndMax(668, 2193); // Set brightness and contrast for channel 2 (Green LUT)
-run("Apply LUT", "slice");
-run("Close");
-// Threshold to select the bright areas
+
 run("Next Slice [>]");	
-run("Subtract...", "value=200 slice");
 makeOval(102, 106, 1299, 1267);
 run("Crop");
-run("Clear Outside", "stack");
-run("Subtract Background...", "rolling=1000 slice");
-			setAutoThreshold("Triangle dark");
 
-// thresholding needs to go to the edge of colonies
-// Day 0 should be blank
-
-// Sets measurements, we want area and integration.
-run("Set Measurements...", "area integrated limit display redirect=None decimal=3");
-run("Measure");
+setAutoThreshold("Triangle dark");
 
 run("Analyze Particles...", "size=800000-Infinity show=[Overlay Masks] display exclude include overlay slice");
 
